@@ -77,6 +77,26 @@ vec4 Eye(vec2 uv)
     return col;
 }
 
+vec4 Mouth(vec2 uv)
+{
+    uv -= .5;
+    vec4 col = vec4(.5, .18, .05, 1.);
+    
+    uv.y *= 1.5;
+    uv.y -= uv.x * uv.x * 2.;
+    float d = length(uv);
+    col.a = S(.5, .48, d);
+
+    float td = length(uv - vec2(0., .6));
+
+    vec3 toothCol = vec3(1.) * S(.6, .35, d);
+    col.rgb = mix(col.rgb, toothCol, S(.4, .37, td));
+
+    td = length(uv + vec2(0., .5));
+    col.rgb = mix(col.rgb, vec3(1., .5, .5), S(.5, .2, td));
+    return col;
+}
+
 vec4 Smiely(vec2 uv)
 {
     vec4 col = vec4(0.);
@@ -84,10 +104,12 @@ vec4 Smiely(vec2 uv)
     uv.x = abs(uv.x);
     vec4 head = Head(uv);
     vec4 eye = Eye(within(uv, vec4(.03, -.1, .37, .25)));
+    vec4 mouth = Mouth(within(uv, vec4(-.3, -.4, .3, -.1)));
 
 
     col = mix(col, head, head.a);
     col = mix(col, eye, eye.a);
+    col = mix(col, mouth, mouth.a);
 
     return col;
 }
