@@ -38,14 +38,32 @@ vec4 Head(vec2 uv)
     hightlight *= remap(.41, -.1, .75, .0, uv.y);
     col.rgb = mix(col.rgb, vec3(1.), hightlight);
 
+    d = length(uv - vec2(.25, -.2));
+    float cheek = S(.2, .01, d) * .4;
+    cheek *= S(.18, .16, d); // make edge sharper
+    col.rgb = mix(col.rgb, vec3(1., .1, .1), cheek);
+
+    return col;
+}
+
+vec4 Eye(vec2 uv)
+{
+    vec4 col = vec4(0.);
+
     return col;
 }
 
 vec4 Smiely(vec2 uv)
 {
     vec4 col = vec4(0.);
+
+    uv.x = abs(uv.x);
     vec4 head = Head(uv);
+    vec4 eye = Eye(uv);
+
+
     col = mix(col, head, head.a);
+    col = mix(col, eye, eye.a);
 
     return col;
 }
