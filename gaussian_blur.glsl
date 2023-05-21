@@ -41,6 +41,7 @@ vec4 Head(vec2 uv)
 
     float hightlight = S(.41, .405, d);
     hightlight *= remap(.41, -.1, .75, .0, uv.y);
+    hightlight *= S(.18, .19, length(uv - vec2(.21, .08)));
     col.rgb = mix(col.rgb, vec3(1.), hightlight);
 
     d = length(uv - vec2(.25, -.2));
