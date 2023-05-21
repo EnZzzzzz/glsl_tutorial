@@ -53,7 +53,26 @@ vec4 Head(vec2 uv)
 
 vec4 Eye(vec2 uv)
 {
-    vec4 col = vec4(0.);
+    uv -= .5;
+    float d = length(uv);
+
+    vec4 irisCol = vec4(.3, .5, 1., 1.);
+    vec4 col = mix(vec4(1.), irisCol, S(.1, .7, d) * .5);
+
+    col.rgb *= 1. - S(.45, .5, d) * .5 * sat(-uv.y-uv.x); // make shadow
+
+    col.rgb = mix(col.rgb, vec3(0.), S(.3, .28, d));
+
+    irisCol.rgb *= 1.  + S(.3, .05, d);
+    col.rgb = mix(col.rgb, irisCol.rgb, S(.28, .25, d));
+
+    col.rgb = mix(col.rgb, vec3(0.), S(.16, .14, d));
+
+    float hightlight = S(.1, .09, length(uv - vec2(-.15, .15)));
+    hightlight += S(.07, .05, length(uv + vec2(-.08, .08)));
+    col.rgb = mix(col.rgb, vec3(1.), hightlight);
+
+    col.a = S(.5, .48, d);
 
     return col;
 }
@@ -64,7 +83,7 @@ vec4 Smiely(vec2 uv)
 
     uv.x = abs(uv.x);
     vec4 head = Head(uv);
-    vec4 eye = Eye(uv);
+    vec4 eye = Eye(within(uv, vec4(.03, -.1, .37, .25)));
 
 
     col = mix(col, head, head.a);
@@ -82,11 +101,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     uv.x *= iResolution.x / iResolution.y;
 
     // Time varying pixel color
-    vec4 col = vec4(0., 0., 0., 1.);
-
     vec4 smiely = Smiely(uv);
-    col.rgb = mix(col.rgb, smiely.rgb, smiely.a);
 
     // Output to screen
-    fragColor = col;
+    fragColor = smiely;
 }
