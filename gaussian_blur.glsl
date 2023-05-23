@@ -101,7 +101,7 @@ vec4 Mouth(vec2 uv)
 vec4 Brow(vec2 uv)
 {
     float y = uv.y;
-    uv.y += uv.x * .8 - .3;
+    uv.y += uv.x * .94 - .48;
     uv.x -= .1;
     uv -= .5;
     
@@ -115,8 +115,10 @@ vec4 Brow(vec2 uv)
 
     float browMask = sat(s1 - s2);
 
-    float colMask = remap01(.7, .8, y) * .75;
-    colMask *= S(.6, .9, browMask);
+    float colMask = remap01(.74, .9, y) * .6;
+    colMask *= S(.4, .4 - .03, d1);
+    colMask *= S(.25, .43, d1);
+
 
     vec4 browCol  = mix(vec4(.4, .2, .2, 1.), vec4(1.), colMask);
 
