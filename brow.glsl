@@ -16,7 +16,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     float y = uv.y;
 
-    uv.y += uv.x * .8;
+    // uv.y += uv.x * .8;
     uv.y += .1;
     
    
