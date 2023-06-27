@@ -120,6 +120,17 @@ vec4 Brow(vec2 uv)
     colMask *= S(.6, .9, browMask);
     vec4 browCol = mix(vec4(.4, .2, .2, 1.), vec4(1.), colMask);
 
+    // make shadow
+    uv.y += .15;
+    blur += .1;
+    d1 = length(uv);
+    s1 = S(.45, .45 - blur, d1);
+    d2 = length(uv - vec2(.1, -.2) * .7);
+    s2 = S(.5, .5 - blur, d2);
+    float shadowMask = sat(s1 - s2);
+
+    col = mix(col, vec4(0.0, 0.0, 0.0, 1.0), shadowMask * .9);
+
     col = mix(col, browCol,  S(.2, .4, browMask));
     return col;
 
