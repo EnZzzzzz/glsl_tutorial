@@ -52,15 +52,16 @@ vec4 Head(vec2 uv)
     return col;
 }
 
-vec4 Eye(vec2 uv)
+vec4 Eye(vec2 uv, float side)
 {
     uv -= .5;
+    uv.x *= side;
     float d = length(uv);
 
     vec4 irisCol = vec4(.3, .5, 1., 1.);
     vec4 col = mix(vec4(1.), irisCol, S(.1, .7, d) * .5);
 
-    col.rgb *= 1. - S(.45, .5, d) * .5 * sat(-uv.y-uv.x); // make shadow
+    col.rgb *= 1. - S(.45, .5, d) * .5 * sat(-uv.y - uv.x * side); // make shadow
 
     col.rgb = mix(col.rgb, vec3(0.), S(.3, .28, d));
 
@@ -140,9 +141,10 @@ vec4 Smiely(vec2 uv)
 {
     vec4 col = vec4(0.);
 
+    float side = sign(uv.x);
     uv.x = abs(uv.x);
     vec4 head = Head(uv);
-    vec4 eye = Eye(within(uv, vec4(.03, -.1, .37, .25)));
+    vec4 eye = Eye(within(uv, vec4(.03, -.1, .37, .25)), side);
     vec4 mouth = Mouth(within(uv, vec4(-.3, -.4, .3, -.1)));
     vec4 brow = Brow(within(uv, vec4(.03, .2, .4, .43)));
 
