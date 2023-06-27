@@ -116,9 +116,9 @@ vec4 Brow(vec2 uv)
 
     float browMask = sat(s1 - s2);
 
-    float cloMask = remap01(.7, .8, y) * .75;
-    cloMask *= S(.6, .9, browMask);
-    vec4 browCol = vec4(.4, .2, .2, 1.);
+    float colMask = remap01(.7, .8, y) * .75;
+    colMask *= S(.6, .9, browMask);
+    vec4 browCol = mix(vec4(.4, .2, .2, 1.), vec4(1.), colMask);
 
     col = mix(col, browCol,  S(.2, .4, browMask));
     return col;
