@@ -52,6 +52,7 @@ vec4 Head(vec2 uv)
     return col;
 }
 
+
 vec4 Eye(vec2 uv, float side)
 {
     uv -= .5;
