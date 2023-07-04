@@ -52,7 +52,8 @@ vec4 Head(vec2 uv)
     return col;
 }
 
-vec4 Eye(vec2 uv, float side)
+
+vec4 Eye(vec2 uv, float side, vec2 m)
 {
     uv -= .5;
     uv.x *= side;
@@ -61,7 +62,7 @@ vec4 Eye(vec2 uv, float side)
     vec4 irisCol = vec4(.3, .5, 1., 1.);
     vec4 col = mix(vec4(1.), irisCol, S(.1, .7, d) * .5);
 
-    col.rgb *= 1. - S(.45, .5, d) * .5 * sat(-uv.y-uv.x); // make shadow
+    col.rgb *= 1. - S(.45, .5, d) * .5 * sat(-uv.y - uv.x * side); // make shadow
 
     col.rgb = mix(col.rgb, vec3(0.), S(.3, .28, d));
 
@@ -102,45 +103,51 @@ vec4 Mouth(vec2 uv)
 vec4 Brow(vec2 uv)
 {
     float y = uv.y;
-    uv.y += uv.x * .94 - .48;
+    uv.y += uv.x * .8 - .3;
     uv.x -= .1;
     uv -= .5;
-    
+
     vec4 col = vec4(0.);
 
-    float blur = .03;
+    float blur = .1;
+
     float d1 = length(uv);
     float s1 = S(.45, .45 - blur, d1);
-    float d2 = length(uv - vec2(.1 , -.2));
+    float d2 = length(uv - vec2(.1, -.2) * .7);
     float s2 = S(.5, .5 - blur, d2);
 
     float browMask = sat(s1 - s2);
 
-    float colMask = remap01(.74, .9, y) * .6;
-    colMask *= S(.4, .4 - .03, d1);
-    colMask *= S(.25, .43, d1);
+    float colMask = remap01(.7, .8, y) * .75;
+    colMask *= S(.6, .9, browMask);
+    vec4 browCol = mix(vec4(.4, .2, .2, 1.), vec4(1.), colMask);
 
+    // make shadow
+    uv.y += .15;
+    blur += .1;
+    d1 = length(uv);
+    s1 = S(.45, .45 - blur, d1);
+    d2 = length(uv - vec2(.1, -.2) * .7);
+    s2 = S(.5, .5 - blur, d2);
+    float shadowMask = sat(s1 - s2);
 
-    vec4 browCol  = mix(vec4(.4, .2, .2, 1.), vec4(1.), colMask);
+    col = mix(col, vec4(0.0, 0.0, 0.0, 1.0), shadowMask * .9);
 
+    col = mix(col, browCol,  S(.2, .4, browMask));
+    return col;
 
-    
-    browCol.a = browMask;
-    
-
-    return browCol;
 }
 
-vec4 Smiley(vec2 uv)
+vec4 Smiely(vec2 uv, vec2 m)
 {
     vec4 col = vec4(0.);
 
     float side = sign(uv.x);
     uv.x = abs(uv.x);
     vec4 head = Head(uv);
-    vec4 eye = Eye(within(uv, vec4(.03, -.1, .37, .25)), side);
+    vec4 eye = Eye(within(uv, vec4(.03, -.1, .37, .25)), side, m);
     vec4 mouth = Mouth(within(uv, vec4(-.3, -.4, .3, -.1)));
-    vec4 brow = Brow(within(uv, vec4(.03, .2, .4, .4)));
+    vec4 brow = Brow(within(uv, vec4(.03, .2, .4, .43)));
 
     col = mix(col, head, head.a);
     col = mix(col, eye, eye.a);
@@ -158,8 +165,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     uv -= .5;
     uv.x *= iResolution.x / iResolution.y;
 
+    vec2 m = iMouse.xy;
+
     // Time varying pixel color
-    vec4 smiely = Smiley(uv);
+    vec4 smiely = Smiely(uv, m);
 
     // Output to screen
     fragColor = smiely;
