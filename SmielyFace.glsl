@@ -53,7 +53,7 @@ vec4 Head(vec2 uv)
 }
 
 
-vec4 Eye(vec2 uv, float side)
+vec4 Eye(vec2 uv, float side, vec2 m)
 {
     uv -= .5;
     uv.x *= side;
@@ -138,14 +138,14 @@ vec4 Brow(vec2 uv)
 
 }
 
-vec4 Smiely(vec2 uv)
+vec4 Smiely(vec2 uv, vec2 m)
 {
     vec4 col = vec4(0.);
 
     float side = sign(uv.x);
     uv.x = abs(uv.x);
     vec4 head = Head(uv);
-    vec4 eye = Eye(within(uv, vec4(.03, -.1, .37, .25)), side);
+    vec4 eye = Eye(within(uv, vec4(.03, -.1, .37, .25)), side, m);
     vec4 mouth = Mouth(within(uv, vec4(-.3, -.4, .3, -.1)));
     vec4 brow = Brow(within(uv, vec4(.03, .2, .4, .43)));
 
@@ -165,8 +165,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     uv -= .5;
     uv.x *= iResolution.x / iResolution.y;
 
+    vec2 m = iMouse.xy;
+
     // Time varying pixel color
-    vec4 smiely = Smiely(uv);
+    vec4 smiely = Smiely(uv, m);
 
     // Output to screen
     fragColor = smiely;
