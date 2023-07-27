@@ -1,9 +1,6 @@
-// "ShaderToy Tutorial - Simplest 3D" 
-// by Martijn Steinrucken aka BigWings/CountFrolic - 2017
-// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
-//
-// This shader is part of a tutorial on YouTube
-// https://www.youtube.com/watch?v=dKA5ZVALOhs
+float DistLine(vec3 ro, vec3 rd, vec3 p){
+    return length(cross(p-ro, rd)) / length(rd);
+}
 
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
@@ -16,5 +13,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // Ray origin，表示相机坐标
     vec3 ro = vec3(0., 0., -2.); // 屏幕外
 
-    fragColor = vec4(uv, .5 + .5*sin(iGlobalTime), 1.0);
+    // Ray direction
+    vec3 rd = vec3(uv.x, uv.y, 0.)-ro;
+
+    float t = iGlobalTime;
+
+    vec3 p = vec3(0.5 * sin(t), 0., 3.+cos(t));
+    float d = DistLine(ro, rd, p);
+
+
+    d = smoothstep(.1, .09, d);
+
+    fragColor = vec4(d);
 }
