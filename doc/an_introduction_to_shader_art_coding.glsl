@@ -16,19 +16,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     vec3 col_c = vec3(1.0, 1.0, 1.0);
     vec3 col_d = vec3(0.263, 0.416, 0.557);
 
-    for (float i=0.0; i < 3.0; i++){
+    for (float i=0.0; i < 4.0; i++){
         uv = fract(uv * 1.5) - 0.5;
 
-        float d = length(uv);
+        float d = length(uv) * exp(-length(uv0));
 
-        vec3 col = palette(length(uv0) + iTime * 0.4, col_a, col_b, col_c, col_d);
+        vec3 col = palette(length(uv0) + i * .4 + iTime * 0.4, col_a, col_b, col_c, col_d);
 
         d = sin(d * 8.0 + iTime) / 8.0;
         d = abs(d);
 
-        d = 0.02 / d;
+        d = 0.01 / d;
+        d = pow(d, 1.2);
 
-        col *= d;
         finalColor += col * d;
     }
     fragColor = vec4(finalColor, 1.0);
