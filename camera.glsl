@@ -18,7 +18,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // rd=I-ro
     vec3 rd = vec3(uv, 0.) - ro;
 
-    vec3 p = vec3(0.0, 0., 1.);
+    float t = iGlobalTime;
+
+
+    vec3 p = vec3(sin(t) * 0.5, 0., 2. + cos(t) * 2.);
     float d = DistLine(ro, rd, p);
 
     d = smoothstep(.1, .09, d);
