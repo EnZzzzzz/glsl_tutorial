@@ -1,7 +1,7 @@
-float DistLine(vec3 ro, vec3 rd, vec3 p){
-    return length(cross(p-ro, rd)) / length(rd);
+float DistLine(vec3 ro, vec3 rd, vec3 p)
+{
+    return length(cross(p - ro, rd)) / length(rd);
 }
-
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
@@ -10,17 +10,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     uv -= .5;
     uv.x *= iResolution.x / iResolution.y;
 
-    // Ray origin，表示相机坐标
-    vec3 ro = vec3(0., 0., -2.); // 屏幕外
+    // z值如果为负数，表示camera在屏幕外面，为正时表示camera在屏幕里面
+    // ro表示的camera的坐标
+    vec3 ro = vec3(0., 0., -2.);
 
-    // Ray direction
-    vec3 rd = vec3(uv.x, uv.y, 0.)-ro;
+    // rd表示屏幕上一点I的向量
+    // rd=I-ro
+    vec3 rd = vec3(uv, 0.) - ro;
 
-    float t = iGlobalTime;
-
-    vec3 p = vec3(0.5 * sin(t), 0., 3.+cos(t));
+    vec3 p = vec3(0.0, 0., 1.);
     float d = DistLine(ro, rd, p);
-
 
     d = smoothstep(.1, .09, d);
 
