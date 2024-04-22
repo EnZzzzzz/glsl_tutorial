@@ -1,3 +1,9 @@
+/*
+* Auth: wqx1903240568
+Date: 854816663
+*/
+
+
 float DistLine(vec3 ro, vec3 rd, vec3 p)
 {
     return length(cross(p - ro, rd)) / length(rd);
